@@ -1,0 +1,33 @@
+/* Modern Sidebar - Blue/White Glassmorphism */
+.sidebar-glass {
+  min-width: 200px;
+  height: calc(100vh - 60px);
+  background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+  backdrop-filter: blur(12px);
+  border-radius: 0 24px 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 40px 0 0 0;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.08);
+  align-items: flex-start;
+}
+.sidebar-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 16px 32px;
+  border-radius: 16px 0 0 16px;
+  font-size: 1.15rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  margin-left: 8px;
+}
+.sidebar-link.active, .sidebar-link:hover {
+  background: #fff;
+  color: #2575fc;
+  transform: translateX(6px) scale(1.04);
+  box-shadow: 0 2px 12px rgba(37,117,252,0.08);
+}
