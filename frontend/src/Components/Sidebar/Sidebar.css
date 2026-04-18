@@ -1,33 +1,64 @@
-/* Modern Sidebar - Blue/White Glassmorphism */
-.sidebar-glass {
-  min-width: 200px;
+.sidebar {
+  width: 230px;
   height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
-  backdrop-filter: blur(12px);
-  border-radius: 0 24px 24px 0;
+  position: fixed;
+  top: 60px;
+  left: 0;
+
+  background: rgba(30, 58, 95, 0.9);
+  backdrop-filter: blur(15px);
+
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 40px 0 0 0;
-  box-shadow: 4px 0 24px rgba(0,0,0,0.08);
-  align-items: flex-start;
+  gap: 12px;
 }
-.sidebar-link {
-  color: #fff;
+
+.menu {
   text-decoration: none;
-  padding: 16px 32px;
-  border-radius: 16px 0 0 16px;
-  font-size: 1.15rem;
-  font-weight: 500;
+  color: white;
+}
+
+.menu-item {
+  position: relative;
+  padding: 12px 14px;
+  border-radius: 12px;
+
   display: flex;
   align-items: center;
-  gap: 14px;
-  transition: background 0.2s, color 0.2s, transform 0.2s;
-  margin-left: 8px;
+  gap: 10px;
+
+  transition: 0.3s;
+  overflow: hidden;
 }
-.sidebar-link.active, .sidebar-link:hover {
-  background: #fff;
-  color: #2575fc;
-  transform: translateX(6px) scale(1.04);
-  box-shadow: 0 2px 12px rgba(37,117,252,0.08);
+
+/* hover */
+.menu-item:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateX(4px);
+}
+
+/* ACTIVE STATE */
+.menu-item.active {
+  background: rgba(255,255,255,0.15);
+  font-weight: 600;
+}
+
+/* ANIMATED INDICATOR */
+.indicator {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 4px;
+  height: 60%;
+  background: #60a5fa;
+  border-radius: 10px;
+  opacity: 0;
+  transform: scaleY(0);
+  transition: 0.3s;
+}
+
+.menu-item.active .indicator {
+  opacity: 1;
+  transform: scaleY(1);
 }
