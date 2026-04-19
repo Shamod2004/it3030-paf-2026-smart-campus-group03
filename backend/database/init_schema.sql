@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS resources (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   last_used_at DATETIME,
-  total_bookings INT DEFAULT 0,
+  total_bookings BIGINT DEFAULT 0,
   INDEX idx_resource_id (resource_id),
   INDEX idx_name (name),
   INDEX idx_type (type),
