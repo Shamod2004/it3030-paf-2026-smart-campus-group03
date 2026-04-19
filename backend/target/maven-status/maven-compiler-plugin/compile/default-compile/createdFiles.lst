@@ -1,0 +1,10 @@
+com\smartcampus\resources\model\ResourceType.class
+com\smartcampus\BackendApplication.class
+com\smartcampus\resources\dto\ResourceDTO.class
+com\smartcampus\resources\dto\CreateResourceRequest.class
+com\smartcampus\resources\model\ResourceStatus.class
+com\smartcampus\resources\service\ResourceService.class
+com\smartcampus\BackendApplication$1.class
+com\smartcampus\resources\controller\ResourceController.class
+com\smartcampus\resources\model\Resource.class
+com\smartcampus\resources\repository\ResourceRepository.class
