@@ -3,6 +3,7 @@ import { Search, Filter, X } from 'lucide-react';
 import UserLayout from '../components/UserLayout';
 import ResourceCard from '../components/ResourceCard';
 import BookingModal from '../components/BookingModal';
+import ResourceDetails from '../components/ResourceDetails';
 import resourceService from '../services/resourceService';
 import '../styles/UserResourcesPage.css';
 
@@ -18,6 +19,7 @@ const UserResourcesPage = () => {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
   const [types, setTypes] = useState([]);
 
@@ -109,7 +111,8 @@ const UserResourcesPage = () => {
   };
 
   const handleViewDetails = (resource) => {
-    console.log('View details:', resource);
+    setSelectedResource(resource);
+    setShowDetailsModal(true);
   };
 
   const handleConfirmBooking = async (bookingData) => {
@@ -262,6 +265,16 @@ const UserResourcesPage = () => {
         }}
         resource={selectedResource}
         onConfirmBooking={handleConfirmBooking}
+      />
+
+      {/* Resource Details Modal */}
+      <ResourceDetails
+        isOpen={showDetailsModal}
+        onClose={() => {
+          setShowDetailsModal(false);
+          setSelectedResource(null);
+        }}
+        resource={selectedResource}
       />
     </UserLayout>
   );
