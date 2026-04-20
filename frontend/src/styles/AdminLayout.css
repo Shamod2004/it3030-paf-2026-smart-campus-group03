@@ -4,24 +4,32 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
+  width: 100%;
   background: #ffffff;
+  overflow: hidden;
 }
 
 .layout-container {
   display: flex;
   flex: 1;
+  width: 100%;
+  min-height: 0;
   overflow: hidden;
 }
 
 .main-content {
   flex: 1;
+  width: 100%;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   background: #f9fafb;
 }
 
 .content-wrapper {
   padding: 2rem;
-  max-width: 100%;
+  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 768px) {

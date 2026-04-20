@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Bell, LogOut, User, ChevronDown } from 'lucide-react';
 import '../styles/Navbar.css';
 
-const Navbar = () => {
+const Navbar = ({ isUserPanel = false }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [notifications] = useState(3);
+  const [notifications] = useState(isUserPanel ? 1 : 3);
 
   const handleLogout = () => {
     console.log('Logging out...');
@@ -18,6 +18,7 @@ const Navbar = () => {
         <div className="navbar-logo">
           <div className="logo-icon">🏫</div>
           <span className="logo-text">Smart Campus</span>
+          {isUserPanel && <span className="user-badge">Student Portal</span>}
         </div>
 
         {/* Right Section */}
@@ -39,10 +40,10 @@ const Navbar = () => {
               <div className="avatar">
                 <img
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop"
-                  alt="Admin"
+                  alt="User"
                 />
               </div>
-              <span className="username">Admin User</span>
+              <span className="username">{isUserPanel ? 'Student' : 'Admin User'}</span>
               <ChevronDown size={16} />
             </div>
 

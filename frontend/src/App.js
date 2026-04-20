@@ -1,20 +1,27 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './pages/HomePage';
 import ResourcesManagement from './pages/ResourcesManagement';
+import UserDashboard from './pages/UserDashboard';
+import UserResourcesPage from './pages/UserResourcesPage';
 import './styles/index.css';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Redirect root to resources page */}
-        <Route path="/" element={<Navigate to="/admin/resources" replace />} />
+        {/* Home Page - Portal Selection */}
+        <Route path="/" element={<HomePage />} />
 
         {/* Admin Routes */}
         <Route path="/admin/resources" element={<ResourcesManagement />} />
 
-        {/* Catch all - redirect to resources */}
-        <Route path="*" element={<Navigate to="/admin/resources" replace />} />
+        {/* User Routes */}
+        <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/user/resources" element={<UserResourcesPage />} />
+
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );

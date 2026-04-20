@@ -6,8 +6,9 @@
   border-right: 1px solid #e5e7eb;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px);
+  min-height: 0;
   overflow-y: auto;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
