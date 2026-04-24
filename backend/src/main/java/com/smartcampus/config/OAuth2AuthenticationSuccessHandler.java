@@ -39,7 +39,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         String googleId = oAuth2User.getAttribute("sub");
 
         User user = userService.findOrCreateOAuthUser("GOOGLE", googleId, email, name);
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getId());
 
         String redirectUrl = frontendUrl + "/oauth2/callback"
             + "?token="  + URLEncoder.encode(token,          StandardCharsets.UTF_8)

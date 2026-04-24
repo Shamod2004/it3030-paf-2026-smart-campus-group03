@@ -5,14 +5,15 @@ import SummaryCard from '../components/SummaryCard';
 import ResourceCard from '../components/ResourceCard';
 import BookingModal from '../components/BookingModal';
 import resourceService from '../services/resourceService';
+import useAuth from '../hooks/useAuth';
 import '../styles/UserDashboard.css';
 
 const UserDashboard = () => {
+  const { user } = useAuth();
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedResource, setSelectedResource] = useState(null);
-  const [userName] = useState('Alex Johnson');
 
   useEffect(() => {
     loadResources();
@@ -59,7 +60,7 @@ const UserDashboard = () => {
         {/* Welcome Section */}
         <div className="welcome-section">
           <div className="welcome-content">
-            <h1>Welcome back, {userName} 👋</h1>
+            <h1>Welcome back, {user?.name?.split(' ')[0] || 'User'} 👋</h1>
             <p>Quickly book campus resources anytime, anywhere</p>
           </div>
           <div className="welcome-illustration">

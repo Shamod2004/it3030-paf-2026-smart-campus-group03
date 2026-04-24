@@ -12,16 +12,19 @@ import Register      from './pages/auth/Register'
 import OAuthCallback from './pages/auth/OAuthCallback'
 
 // Dashboard
-import Dashboard from './pages/dashboard/Dashboard'
+import Dashboard     from './pages/dashboard/Dashboard'
+import UserDashboard from './pages/UserDashboard'
 
-
+// Resources (Module A)
+import ResourcesManagement from './pages/ResourcesManagement'
+import UserResourcesPage   from './pages/UserResourcesPage'
 
 // Notifications & Admin
 import Notifications  from './pages/notifications/Notifications'
 import AdminPanel     from './pages/admin/AdminPanel'
 import UserManagement from './pages/admin/UserManagement'
 
-// Tickets
+// Tickets (Module C)
 import TicketPage    from './pages/tickets/TicketPage'
 import TicketCreate  from './pages/tickets/TicketCreate'
 import TicketDetails from './pages/tickets/TicketDetails'
@@ -51,22 +54,40 @@ export default function App() {
           <Route path="/oauth2/callback" element={<OAuthCallback />} />
         </Route>
 
-        {/* ── Protected Routes ──────────────────────────────────────── */}
+        {/* ── UserDashboard — has its own UserLayout (Navbar + UserSidebar) ── */}
+        <Route path="/user/dashboard" element={
+          <PrivateRoute><UserDashboard /></PrivateRoute>
+        } />
+        <Route path="/user/resources" element={
+          <PrivateRoute><UserResourcesPage /></PrivateRoute>
+        } />
+
+        {/* ── Protected Routes inside DashboardLayout ───────────────── */}
         <Route element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
+
+          {/* Dashboard */}
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Tickets */}
+          {/* Resources admin (Module A) */}
+          <Route path="/admin/resources" element={
+            <RoleRoute roles={['ADMIN', 'MANAGER']}>
+              <ResourcesManagement />
+            </RoleRoute>
+          } />
+
+          {/* Tickets (Module C) */}
           <Route path="/tickets"       element={<TicketPage />} />
           <Route path="/tickets/new"   element={<TicketCreate />} />
           <Route path="/tickets/:id"   element={<TicketDetails />} />
 
-          {/* Notifications */}
+          {/* Notifications (Module D) */}
           <Route path="/notifications" element={<Notifications />} />
 
-          {/* Admin */}
+          {/* Admin (Module E) */}
           <Route path="/admin"         element={<RoleRoute roles={['ADMIN']}><AdminPanel /></RoleRoute>} />
           <Route path="/admin/users"   element={<RoleRoute roles={['ADMIN']}><UserManagement /></RoleRoute>} />
           <Route path="/admin/tickets" element={<RoleRoute roles={['ADMIN']}><TicketPage /></RoleRoute>} />
+
         </Route>
 
         {/* Catch-all */}

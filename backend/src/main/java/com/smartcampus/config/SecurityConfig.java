@@ -61,15 +61,16 @@ public class SecurityConfig {
                 .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/uploads/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/facilities/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/resources/**").permitAll()
 
                 // Admin only
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
-                // Write access to facilities
-                .requestMatchers(HttpMethod.POST,   "/api/facilities/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.PUT,    "/api/facilities/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers(HttpMethod.DELETE, "/api/facilities/**").hasAnyRole("ADMIN", "MANAGER")
+                // Write access to resources (ADMIN or MANAGER)
+                .requestMatchers(HttpMethod.POST,   "/api/resources/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.PUT,    "/api/resources/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.PATCH,  "/api/resources/**").hasAnyRole("ADMIN", "MANAGER")
+                .requestMatchers(HttpMethod.DELETE, "/api/resources/**").hasAnyRole("ADMIN", "MANAGER")
 
                 // Booking approval
                 .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/status").hasAnyRole("ADMIN", "MANAGER")

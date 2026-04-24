@@ -1,5 +1,7 @@
 package com.smartcampus.resources.controller;
 
+import com.smartcampus.model.User;
+import com.smartcampus.repository.UserRepository;
 import com.smartcampus.resources.dto.CreateResourceRequest;
 import com.smartcampus.resources.dto.ResourceDTO;
 import com.smartcampus.resources.service.ResourceService;
@@ -9,6 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -20,123 +25,139 @@ import java.util.Map;
 public class ResourceController {
 
     private final ResourceService resourceService;
+    private final UserRepository  userRepository;
 
-    public ResourceController(ResourceService resourceService) {
+    public ResourceController(ResourceService resourceService, UserRepository userRepository) {
         this.resourceService = resourceService;
+        this.userRepository  = userRepository;
     }
 
-    /**
-     * Get all resources with pagination
-     */
+    // ── Helper ────────────────────────────────────────────────────────────────
+
+    /** Resolve the full User entity from the Spring Security principal */
+    private User resolveUser(UserDetails userDetails) {
+        if (userDetails == null) return null;
+        return userRepository.findByEmail(userDetails.getUsername()).orElse(null);
+    }
+
+    // ── Public read endpoints ─────────────────────────────────────────────────
+
+    /** GET /api/resources */
     @GetMapping
     public ResponseEntity<Map<String, Object>> getAllResources(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0")        int    page,
+            @RequestParam(defaultValue = "10")       int    size,
             @RequestParam(defaultValue = "updatedAt") String sortBy,
-            @RequestParam(defaultValue = "DESC") String sortDirection) {
-        
+            @RequestParam(defaultValue = "DESC")     String sortDirection) {
         try {
             Sort.Direction direction = Sort.Direction.fromString(sortDirection.toUpperCase());
             Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-            
-            Page<ResourceDTO> resources = resourceService.getAllResources(pageable);
-            
-            Map<String, Object> response = buildPaginatedResponse(resources);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(buildPaginatedResponse(resourceService.getAllResources(pageable)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(buildErrorResponse("Failed to fetch resources"));
         }
     }
 
-    /**
-     * Search resources by name, resourceId, or location
-     */
+    /** GET /api/resources/search */
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchResources(
             @RequestParam String searchTerm,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0")  int page,
             @RequestParam(defaultValue = "10") int size) {
-        
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ResourceDTO> resources = resourceService.searchResources(searchTerm, pageable);
-            
-            Map<String, Object> response = buildPaginatedResponse(resources);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(buildPaginatedResponse(
+                    resourceService.searchResources(searchTerm, pageable)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(buildErrorResponse("Failed to search resources"));
         }
     }
 
-    /**
-     * Filter resources by type, status, location, and capacity
-     */
+    /** GET /api/resources/filter */
     @GetMapping("/filter")
     public ResponseEntity<Map<String, Object>> filterResources(
-            @RequestParam(required = false) String type,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String  type,
+            @RequestParam(required = false) String  status,
+            @RequestParam(required = false) String  location,
             @RequestParam(required = false) Integer minCapacity,
             @RequestParam(required = false) Integer maxCapacity,
-            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "0")  int page,
             @RequestParam(defaultValue = "10") int size) {
-        
         try {
             Pageable pageable = PageRequest.of(page, size);
-            Page<ResourceDTO> resources = resourceService.getResourcesWithFilters(
-                    type, status, location, minCapacity, maxCapacity, pageable);
-            
-            Map<String, Object> response = buildPaginatedResponse(resources);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(buildPaginatedResponse(
+                    resourceService.getResourcesWithFilters(
+                            type, status, location, minCapacity, maxCapacity, pageable)));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(buildErrorResponse("Failed to filter resources"));
         }
     }
 
-    /**
-     * Get resource by ID
-     */
+    /** GET /api/resources/{id} */
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getResourceById(@PathVariable Long id) {
         try {
             ResourceDTO resource = resourceService.getResourceById(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", resource);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("success", true, "data", resource));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(buildErrorResponse("Resource not found"));
         }
     }
 
-    /**
-     * Get resource by resourceId (custom field)
-     */
+    /** GET /api/resources/by-resource-id/{resourceId} */
     @GetMapping("/by-resource-id/{resourceId}")
     public ResponseEntity<Map<String, Object>> getResourceByResourceId(@PathVariable String resourceId) {
         try {
             ResourceDTO resource = resourceService.getResourceByResourceId(resourceId);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", resource);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("success", true, "data", resource));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(buildErrorResponse("Resource not found"));
         }
     }
 
+    /** GET /api/resources/types/all */
+    @GetMapping("/types/all")
+    public ResponseEntity<Map<String, Object>> getAllResourceTypes() {
+        try {
+            List<String> types = resourceService.getAllResourceTypes();
+            return ResponseEntity.ok(Map.of("success", true, "data", types));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildErrorResponse("Failed to fetch resource types"));
+        }
+    }
+
+    /** GET /api/resources/statuses/all */
+    @GetMapping("/statuses/all")
+    public ResponseEntity<Map<String, Object>> getAllResourceStatuses() {
+        try {
+            List<String> statuses = resourceService.getAllResourceStatuses();
+            return ResponseEntity.ok(Map.of("success", true, "data", statuses));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(buildErrorResponse("Failed to fetch resource statuses"));
+        }
+    }
+
+    // ── Protected write endpoints (ADMIN / MANAGER only) ─────────────────────
+
     /**
-     * Create new resource
+     * POST /api/resources
+     * Creates a resource and notifies ALL users.
      */
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createResource(@RequestBody CreateResourceRequest request) {
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<Map<String, Object>> createResource(
+            @RequestBody CreateResourceRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            ResourceDTO resource = resourceService.createResource(request);
+            User admin = resolveUser(userDetails);
+            ResourceDTO resource = resourceService.createResource(request, admin);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Resource created successfully");
@@ -149,14 +170,18 @@ public class ResourceController {
     }
 
     /**
-     * Update resource
+     * PUT /api/resources/{id}
+     * Updates resource details.
      */
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Map<String, Object>> updateResource(
             @PathVariable Long id,
-            @RequestBody CreateResourceRequest request) {
+            @RequestBody CreateResourceRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            ResourceDTO resource = resourceService.updateResource(id, request);
+            User admin = resolveUser(userDetails);
+            ResourceDTO resource = resourceService.updateResource(id, request, admin);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Resource updated successfully");
@@ -169,16 +194,14 @@ public class ResourceController {
     }
 
     /**
-     * Delete resource
+     * DELETE /api/resources/{id}
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Map<String, Object>> deleteResource(@PathVariable Long id) {
         try {
             resourceService.deleteResource(id);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Resource deleted successfully");
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(Map.of("success", true, "message", "Resource deleted successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(buildErrorResponse("Failed to delete resource"));
@@ -186,14 +209,18 @@ public class ResourceController {
     }
 
     /**
-     * Update resource status
+     * PATCH /api/resources/{id}/status
+     * Updates status and notifies ALL users if status changed.
      */
     @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<Map<String, Object>> updateResourceStatus(
             @PathVariable Long id,
-            @RequestParam String status) {
+            @RequestParam String status,
+            @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            ResourceDTO resource = resourceService.updateResourceStatus(id, status);
+            User admin = resolveUser(userDetails);
+            ResourceDTO resource = resourceService.updateResourceStatus(id, status, admin);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Resource status updated");
@@ -205,51 +232,18 @@ public class ResourceController {
         }
     }
 
-    /**
-     * Get all resource types
-     */
-    @GetMapping("/types/all")
-    public ResponseEntity<Map<String, Object>> getAllResourceTypes() {
-        try {
-            List<String> types = resourceService.getAllResourceTypes();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", types);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(buildErrorResponse("Failed to fetch resource types"));
-        }
-    }
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
-    /**
-     * Get all resource statuses
-     */
-    @GetMapping("/statuses/all")
-    public ResponseEntity<Map<String, Object>> getAllResourceStatuses() {
-        try {
-            List<String> statuses = resourceService.getAllResourceStatuses();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("data", statuses);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(buildErrorResponse("Failed to fetch resource statuses"));
-        }
-    }
-
-    // Helper methods
     private Map<String, Object> buildPaginatedResponse(Page<ResourceDTO> page) {
         Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("data", page.getContent());
-        response.put("totalPages", page.getTotalPages());
+        response.put("success",       true);
+        response.put("data",          page.getContent());
+        response.put("totalPages",    page.getTotalPages());
         response.put("totalElements", page.getTotalElements());
-        response.put("currentPage", page.getNumber());
-        response.put("pageSize", page.getSize());
-        response.put("hasNext", page.hasNext());
-        response.put("hasPrevious", page.hasPrevious());
+        response.put("currentPage",   page.getNumber());
+        response.put("pageSize",      page.getSize());
+        response.put("hasNext",       page.hasNext());
+        response.put("hasPrevious",   page.hasPrevious());
         return response;
     }
 

@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { Bell, LogOut, User, ChevronDown } from 'lucide-react';
+import useAuth from '../hooks/useAuth';
 import '../styles/Navbar.css';
 
 const Navbar = ({ isUserPanel = false }) => {
+  const { user, logout } = useAuth();
   const [showDropdown, setShowDropdown] = useState(false);
   const [notifications] = useState(isUserPanel ? 1 : 3);
 
-  const handleLogout = () => {
-    console.log('Logging out...');
-    // Implement logout logic
-  };
 
   return (
     <nav className="navbar">
@@ -43,7 +41,7 @@ const Navbar = ({ isUserPanel = false }) => {
                   alt="User"
                 />
               </div>
-              <span className="username">{isUserPanel ? 'Student' : 'Admin User'}</span>
+          <span className="username">{user?.name || (isUserPanel ? 'Student' : 'Admin User')}</span>
               <ChevronDown size={16} />
             </div>
 
@@ -59,7 +57,7 @@ const Navbar = ({ isUserPanel = false }) => {
                 <div className="dropdown-divider"></div>
                 <div
                   className="dropdown-item logout"
-                  onClick={handleLogout}
+                  onClick={logout}
                 >
                   <LogOut size={16} />
                   <span>Logout</span>

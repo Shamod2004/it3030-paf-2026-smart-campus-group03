@@ -23,7 +23,7 @@ const OAuthCallback = () => {
     localStorage.setItem('token', token)
     localStorage.setItem('user', JSON.stringify({ id, name, email, role }))
     toast.success(`Welcome, ${name}! Signed in with Google. 🎉`)
-    navigate('/dashboard', { replace: true })
+    navigate('/user/dashboard', { replace: true })
   }, [])
 
   if (error) return (

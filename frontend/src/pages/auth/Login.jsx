@@ -27,7 +27,7 @@ export default function Login() {
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify({ id, name, email, role }))
       toast.success(`Welcome back, ${name}!`)
-      navigate('/dashboard')
+      navigate('/user/dashboard')
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid email or password')
     } finally {
@@ -36,7 +36,7 @@ export default function Login() {
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google'
+    window.location.href = 'http://localhost:8081/oauth2/authorization/google'
   }
 
   return (

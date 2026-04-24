@@ -197,7 +197,6 @@ public class TicketService {
         ticket.setDescription(updatedTicket.getDescription());
         ticket.setResourceLocation(updatedTicket.getResourceLocation());
         ticket.setPriority(updatedTicket.getPriority());
-        ticket.setPreferredContact(updatedTicket.getPreferredContact());
         return ticketRepository.save(ticket);
     }
 

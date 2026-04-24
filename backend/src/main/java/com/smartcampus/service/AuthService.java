@@ -37,7 +37,7 @@ public class AuthService {
         user.setEnabled(true);
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getId());
         return buildResponse(user, token);
     }
 
@@ -53,7 +53,7 @@ public class AuthService {
             throw new RuntimeException("Account is disabled. Contact admin.");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getId());
         return buildResponse(user, token);
     }
 

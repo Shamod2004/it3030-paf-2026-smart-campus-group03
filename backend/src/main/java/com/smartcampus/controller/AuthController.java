@@ -50,7 +50,7 @@ public class AuthController {
     @GetMapping("/google")
     public ResponseEntity<Map<String, String>> googleLogin() {
         return ResponseEntity.ok(Map.of(
-            "url", "http://localhost:8080/oauth2/authorization/google"
+            "url", "http://localhost:8081/oauth2/authorization/google"
         ));
     }
 }

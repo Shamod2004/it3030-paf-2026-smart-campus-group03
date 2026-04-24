@@ -21,8 +21,25 @@ public class NotificationService {
     private UserRepository userRepository;
 
     /**
-     * Send a notification to a specific user.
+     * Broadcast a notification to ALL users.
      */
+    @Transactional
+    public void notifyAllUsers(String message, String type, String referenceId,
+                               String referenceType, String senderName) {
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            Notification notification = new Notification();
+            notification.setUser(user);
+            notification.setMessage(message);
+            notification.setType(type);
+            notification.setReferenceId(referenceId);
+            notification.setReferenceType(referenceType);
+            notification.setSenderName(senderName);
+            notification.setRead(false);
+            notificationRepository.save(notification);
+        }
+    }
+
     /**
      * Send a notification to a specific user.
      */
