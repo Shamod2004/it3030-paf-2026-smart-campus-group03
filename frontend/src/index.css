@@ -1,0 +1,118 @@
+/* ─── Keyframe animations ───────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ─── CSS Variables / Design Tokens ────────────────────────────────────── */
+:root {
+  --primary:          #6366f1;
+  --primary-dark:     #4f46e5;
+  --primary-glow:     rgba(99,102,241,0.2);
+  --secondary:        #0ea5e9;
+  --success:          #10b981;
+  --warning:          #f59e0b;
+  --danger:           #ef4444;
+  --bg:               #0f172a;
+  --surface:          #1e293b;
+  --surface-2:        #273549;
+  --surface-3:        #1a2942;
+  --border:           #334155;
+  --border-light:     #3d5068;
+  --text:             #f1f5f9;
+  --text-muted:       #94a3b8;
+  --text-dim:         #64748b;
+  --radius:           12px;
+  --radius-lg:        16px;
+  --shadow:           0 4px 24px rgba(0,0,0,0.3);
+  --shadow-lg:        0 20px 60px rgba(0,0,0,0.5);
+  --font:             'Inter', sans-serif;
+  --transition:       all 0.2s ease;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  cursor: pointer;
+  font-family: var(--font);
+  transition: opacity .15s, transform .15s;
+}
+
+button:active { transform: scale(0.97); }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Form inputs ───────────────────────────────────────────────────────── */
+input, select, textarea {
+  font-family: var(--font);
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+  font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+
+input::placeholder { color: var(--text-dim); }
+
+select option { background: var(--surface); }
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+
+/* ─── Utility ───────────────────────────────────────────────────────────── */
+.animate-fadeIn { animation: fadeIn .3s ease; }
+.animate-spin   { animation: spin .8s linear infinite; }
+.animate-pulse  { animation: pulse 2s ease-in-out infinite; }
+
+.card-hover:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3) !important;
+  border-color: #4f46e5 !important;
+}
