@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, Zap } from 'lucide-react';
-import UserLayout from '../components/UserLayout';
+import { useNavigate } from 'react-router-dom';
 import SummaryCard from '../components/SummaryCard';
 import ResourceCard from '../components/ResourceCard';
-import BookingModal from '../components/BookingModal';
 import resourceService from '../services/resourceService';
 import useAuth from '../hooks/useAuth';
 import '../styles/UserDashboard.css';
 
 const UserDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedResource, setSelectedResource] = useState(null);
 
   useEffect(() => {
     loadResources();
@@ -33,30 +31,15 @@ const UserDashboard = () => {
   };
 
   const handleBookNow = (resource) => {
-    setSelectedResource(resource);
-    setShowBookingModal(true);
-  };
+    navigate(`/bookings/create/${resource.id}`)
+  }
 
   const handleViewDetails = (resource) => {
-    // Navigate to resource details or show in modal
-    console.log('View details for:', resource);
-  };
-
-  const handleConfirmBooking = async (bookingData) => {
-    try {
-      // Simulate API call
-      console.log('Booking confirmed:', bookingData);
-      // In production, this would call the backend API
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      setShowBookingModal(false);
-    } catch (error) {
-      throw new Error('Failed to confirm booking');
-    }
-  };
+    navigate('/user/resources')
+  }
 
   return (
-    <UserLayout activeMenu="dashboard">
-      <div className="user-dashboard">
+    <div className="user-dashboard animate-fadeIn">
         {/* Welcome Section */}
         <div className="welcome-section">
           <div className="welcome-content">
@@ -144,18 +127,7 @@ const UserDashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Booking Modal */}
-      <BookingModal
-        isOpen={showBookingModal}
-        onClose={() => {
-          setShowBookingModal(false);
-          setSelectedResource(null);
-        }}
-        resource={selectedResource}
-        onConfirmBooking={handleConfirmBooking}
-      />
-    </UserLayout>
+    </div>
   );
 };
 

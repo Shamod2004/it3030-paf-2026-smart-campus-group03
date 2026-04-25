@@ -27,7 +27,7 @@ export default function Login() {
       localStorage.setItem('token', token)
       localStorage.setItem('user', JSON.stringify({ id, name, email, role }))
       toast.success(`Welcome back, ${name}!`)
-      navigate('/user/dashboard')
+      navigate('/home')
     } catch (err) {
       toast.error(err.response?.data?.message || 'Invalid email or password')
     } finally {

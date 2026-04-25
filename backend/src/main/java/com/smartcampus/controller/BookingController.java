@@ -94,6 +94,35 @@ public class BookingController {
         }
     }
 
+    // Convenience endpoints for approve / reject
+    @PutMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<?> approveBooking(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            User admin = resolveUser(userDetails);
+            return ResponseEntity.ok(bookingService.updateStatus(id, BookingStatus.APPROVED, null, admin));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PutMapping("/{id}/reject")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<?> rejectBooking(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String reason = body.getOrDefault("reason", "No reason provided");
+            User admin = resolveUser(userDetails);
+            return ResponseEntity.ok(bookingService.updateStatus(id, BookingStatus.REJECTED, reason, admin));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", e.getMessage()));
+        }
+    }
+
     // ── USER/ADMIN: Cancel a booking ──────────────────────────────────────────
 
     @PatchMapping("/{id}/cancel")
