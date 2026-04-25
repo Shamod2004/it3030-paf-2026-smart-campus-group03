@@ -74,6 +74,8 @@ public class SecurityConfig {
 
                 // Booking approval
                 .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/status").hasAnyRole("ADMIN", "MANAGER")
+                // Booking read (admin sees all, user sees own via /my)
+                .requestMatchers(HttpMethod.GET, "/api/bookings").hasAnyRole("ADMIN", "MANAGER")
 
                 // Ticket status updates
                 .requestMatchers(HttpMethod.PATCH, "/api/tickets/*/status").hasAnyRole("ADMIN", "MANAGER", "TECHNICIAN")
