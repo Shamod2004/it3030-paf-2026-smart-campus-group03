@@ -56,6 +56,10 @@ public class Resource {
     @Column(name = "total_bookings")
     private Long totalBookings = 0L;
 
+    // Availability windows e.g. "Mon-Fri 08:00-18:00"
+    @Column(name = "availability_windows")
+    private String availabilityWindows;
+
     public Resource() {}
 
     public Resource(String resourceId, String name, ResourceType type, Integer capacity,
@@ -121,4 +125,7 @@ public class Resource {
 
     public Long getTotalBookings() { return totalBookings; }
     public void setTotalBookings(Long totalBookings) { this.totalBookings = totalBookings; }
+
+    public String getAvailabilityWindows() { return availabilityWindows; }
+    public void setAvailabilityWindows(String availabilityWindows) { this.availabilityWindows = availabilityWindows; }
 }

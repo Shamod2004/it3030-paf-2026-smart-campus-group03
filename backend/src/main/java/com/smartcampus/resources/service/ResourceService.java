@@ -178,6 +178,7 @@ public class ResourceService {
         return List.of(
                 ResourceStatus.ACTIVE.name(),
                 ResourceStatus.MAINTENANCE.name(),
+                ResourceStatus.OUT_OF_SERVICE.name(),
                 ResourceStatus.INACTIVE.name()
         );
     }

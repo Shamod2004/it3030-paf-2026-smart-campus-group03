@@ -19,6 +19,7 @@ public class ResourceDTO {
     private LocalDateTime updatedAt;
     private LocalDateTime lastUsedAt;
     private Long totalBookings;
+    private String availabilityWindows;
 
     public ResourceDTO() {}
 
@@ -80,4 +81,7 @@ public class ResourceDTO {
 
     public Long getTotalBookings() { return totalBookings; }
     public void setTotalBookings(Long totalBookings) { this.totalBookings = totalBookings; }
+
+    public String getAvailabilityWindows() { return availabilityWindows; }
+    public void setAvailabilityWindows(String availabilityWindows) { this.availabilityWindows = availabilityWindows; }
 }

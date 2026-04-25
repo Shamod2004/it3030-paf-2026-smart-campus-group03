@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, ChevronUp, ChevronDown } from 'lucide-react';
-import AdminLayout from '../components/AdminLayout';
 import ResourceForm from '../components/ResourceForm';
 import ResourceDetails from '../components/ResourceDetails';
 import resourceService from '../services/resourceService';
@@ -207,8 +206,7 @@ const ResourcesManagement = () => {
   };
 
   return (
-    <AdminLayout activeMenu="resources">
-      <div className="resources-container">
+    <div className="resources-container animate-fadeIn">
         {/* Header Section */}
         <div className="page-header">
           <div>
@@ -438,7 +436,6 @@ const ResourcesManagement = () => {
             </div>
           )}
         </div>
-      </div>
 
       {/* Modals */}
       <ResourceForm
@@ -464,7 +461,7 @@ const ResourcesManagement = () => {
         onDelete={handleDeleteResource}
         onStatusChange={handleStatusChange}
       />
-    </AdminLayout>
+    </div>
   );
 };
 

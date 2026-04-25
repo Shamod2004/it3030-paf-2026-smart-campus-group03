@@ -24,8 +24,11 @@ public class CreateResourceRequest {
 
     private String imageUrl;
 
-    @NotBlank(message = "Status is required")
     private String status;
+    private String availabilityWindows;
+
+    public String getAvailabilityWindows() { return availabilityWindows; }
+    public void setAvailabilityWindows(String availabilityWindows) { this.availabilityWindows = availabilityWindows; }
 
     public CreateResourceRequest() {}
 

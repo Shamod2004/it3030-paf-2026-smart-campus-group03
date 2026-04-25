@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, Calendar, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import SummaryCard from '../components/SummaryCard';
@@ -34,7 +34,7 @@ const UserDashboard = () => {
     navigate(`/bookings/create/${resource.id}`)
   }
 
-  const handleViewDetails = (resource) => {
+  const handleViewDetails = () => {
     navigate('/user/resources')
   }
 
@@ -126,7 +126,6 @@ const UserDashboard = () => {
             <span className="stat-label">Avg. Booking Time</span>
           </div>
         </div>
-      </div>
     </div>
   );
 };

@@ -10,6 +10,10 @@ public class TicketRequest {
     private String resourceLocation;
     private TicketPriority priority;
     private List<String> imageUrls;
+    private String preferredContact;  // Module C requirement
+
+    public String getPreferredContact() { return preferredContact; }
+    public void setPreferredContact(String preferredContact) { this.preferredContact = preferredContact; }
 
     // Getters & Setters
     public String getTitle() { return title; }
