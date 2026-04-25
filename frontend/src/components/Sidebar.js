@@ -1,34 +1,35 @@
 import React, { useState, useEffect } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
-import { Home, Box, Calendar, Bell, Users, Settings, LogOut, ChevronLeft, ChevronRight, ClipboardList } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
+import { Home, Box, Calendar, Bell, Users, LogOut, ChevronLeft, ChevronRight, ClipboardList, Ticket } from 'lucide-react'
 import useAuth from '../hooks/useAuth'
 import { getUnreadCount } from '../services/notificationService'
 
 // ── Nav definitions ────────────────────────────────────────────────────────────
 
 const USER_NAV = [
-  { to: '/user/dashboard',      label: 'Dashboard',      icon: Home },
-  { to: '/user/resources',      label: 'Resources',      icon: Box },
-  { to: '/bookings/create',     label: 'Create Booking', icon: Calendar },
-  { to: '/bookings/my',         label: 'My Bookings',    icon: ClipboardList },
-  { to: '/notifications',       label: 'Notifications',  icon: Bell, badge: true },
+  { to: '/user/dashboard',  label: 'Dashboard',      icon: Home },
+  { to: '/user/resources',  label: 'Resources',      icon: Box },
+  { to: '/bookings/create', label: 'Create Booking', icon: Calendar },
+  { to: '/bookings/my',     label: 'My Bookings',    icon: ClipboardList },
+  { to: '/tickets',         label: 'Tickets',        icon: Ticket },
+  { to: '/notifications',   label: 'Notifications',  icon: Bell, badge: true },
 ]
 
 const ADMIN_NAV = [
-  { to: '/dashboard',           label: 'Dashboard',       icon: Home },
-  { to: '/admin/resources',     label: 'Manage Resources',icon: Box },
-  { to: '/admin/bookings',      label: 'Booking Requests',icon: ClipboardList },
-  { to: '/admin/all-bookings',  label: 'All Bookings',    icon: Calendar },
-  { to: '/notifications',       label: 'Notifications',   icon: Bell, badge: true },
-  { to: '/admin/users',         label: 'Users',           icon: Users },
+  { to: '/dashboard',          label: 'Dashboard',        icon: Home },
+  { to: '/admin/resources',    label: 'Manage Resources', icon: Box },
+  { to: '/admin/bookings',     label: 'Booking Requests', icon: ClipboardList },
+  { to: '/admin/all-bookings', label: 'All Bookings',     icon: Calendar },
+  { to: '/admin/tickets',      label: 'Manage Tickets',   icon: Ticket },
+  { to: '/notifications',      label: 'Notifications',    icon: Bell, badge: true },
+  { to: '/admin/users',        label: 'Users',            icon: Users },
 ]
 
 // ── Component ──────────────────────────────────────────────────────────────────
 
 const Sidebar = () => {
   const { user, hasRole, logout } = useAuth()
-  const navigate = useNavigate()
-  const [collapsed, setCollapsed]   = useState(false)
+  const [collapsed, setCollapsed]     = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
 
   const isAdmin = hasRole('ADMIN', 'MANAGER')
