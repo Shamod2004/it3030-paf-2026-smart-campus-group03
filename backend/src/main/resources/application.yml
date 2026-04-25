@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: Smart Campus Backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/paf?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&zeroDateTimeBehavior=CONVERT_TO_NULL
+    username: root
+    password: 12345678
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+
+  mvc:
+    cors:
+      allowed-origins: http://localhost:3000
+      allowed-methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
+
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+app:
+  frontend-url: http://localhost:3000
+
+logging:
+  level:
+    root: WARN
+    org.springframework.web: WARN
+    org.hibernate: WARN
+    com.smartcampus: INFO
