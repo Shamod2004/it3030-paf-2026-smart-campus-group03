@@ -20,7 +20,7 @@ public class Booking {
 
     // Link to the resource being booked
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resource_id")
+    @JoinColumn(name = "resource_id", foreignKey = @ForeignKey(name = "fk_booking_resource"))
     private com.smartcampus.resources.model.Resource resource;
 
     private String resourceName;  // denormalised for display convenience

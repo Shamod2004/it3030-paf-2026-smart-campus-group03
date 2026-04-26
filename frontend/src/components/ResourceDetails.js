@@ -133,7 +133,7 @@ const ResourceDetails = ({ isOpen, onClose, resource, onEdit, onDelete, onStatus
           <div className="status-change-section">
             <h4>Change Status</h4>
             <div className="status-buttons">
-              {['ACTIVE', 'MAINTENANCE', 'INACTIVE'].map((status) => (
+              {['ACTIVE', 'MAINTENANCE', 'OUT_OF_SERVICE', 'INACTIVE'].map((status) => (
                 <button
                   key={status}
                   className={`status-btn ${resource.status === status ? 'active' : ''}`}

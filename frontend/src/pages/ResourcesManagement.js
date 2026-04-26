@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Plus, Edit2, Trash2, Eye, ChevronUp, ChevronDown } from 'lucide-react';
+import toast from 'react-hot-toast';
 import ResourceForm from '../components/ResourceForm';
 import ResourceDetails from '../components/ResourceDetails';
 import resourceService from '../services/resourceService';
@@ -95,14 +96,14 @@ const ResourcesManagement = () => {
     try {
       const response = await resourceService.createResource(formData);
       if (response.success) {
-        showSuccessMessage('Resource created successfully');
+        toast.success('Resource created successfully');
         setShowFormModal(false);
         setCurrentPage(0);
         loadResources();
       }
     } catch (err) {
       console.error('Error adding resource:', err);
-      throw err;
+      toast.error('Failed to create resource');
     }
   };
 
@@ -110,14 +111,14 @@ const ResourcesManagement = () => {
     try {
       const response = await resourceService.updateResource(selectedResource.id, formData);
       if (response.success) {
-        showSuccessMessage('Resource updated successfully');
+        toast.success('Resource updated successfully');
         setShowFormModal(false);
         setSelectedResource(null);
         loadResources();
       }
     } catch (err) {
       console.error('Error updating resource:', err);
-      throw err;
+      toast.error('Failed to update resource');
     }
   };
 
@@ -125,14 +126,14 @@ const ResourcesManagement = () => {
     try {
       const response = await resourceService.deleteResource(id);
       if (response.success) {
-        showSuccessMessage('Resource deleted successfully');
+        toast.success('Resource deleted successfully');
         setShowDetailsModal(false);
         setCurrentPage(0);
         loadResources();
       }
     } catch (err) {
       console.error('Error deleting resource:', err);
-      throw err;
+      toast.error(err.response?.data?.message || 'Failed to delete resource');
     }
   };
 
@@ -140,12 +141,12 @@ const ResourcesManagement = () => {
     try {
       const response = await resourceService.updateResourceStatus(id, newStatus);
       if (response.success) {
-        showSuccessMessage('Status updated successfully');
+        toast.success('Status updated successfully');
         loadResources();
       }
     } catch (err) {
       console.error('Error updating status:', err);
-      throw err;
+      toast.error('Failed to update status');
     }
   };
 
@@ -400,8 +401,9 @@ const ResourcesManagement = () => {
                         <button
                           className="btn-icon danger"
                           onClick={() => {
-                            setSelectedResource(resource);
-                            setShowDetailsModal(true);
+                            if (window.confirm(`Delete "${resource.name}"? This cannot be undone.`)) {
+                              handleDeleteResource(resource.id);
+                            }
                           }}
                           title="Delete"
                         >

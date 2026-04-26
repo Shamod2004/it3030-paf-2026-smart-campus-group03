@@ -26,6 +26,17 @@ export default function BookingRequests() {
 
   useEffect(() => { load() }, [])
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Delete this booking permanently?')) return
+    try {
+      await bookingService.deleteBooking(id)
+      toast.success('Booking deleted')
+      load()
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to delete')
+    }
+  }
+
   const filtered = filter === 'ALL' ? bookings : bookings.filter(b => b.status === filter)
 
   const handleApprove = async (id) => {
@@ -60,7 +71,7 @@ export default function BookingRequests() {
         </div>
         {/* Filter tabs */}
         <div style={s.tabs}>
-          {['PENDING', 'APPROVED', 'REJECTED', 'ALL'].map(f => (
+          {['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'ALL'].map(f => (
             <button
               key={f}
               style={{ ...s.tab, ...(filter === f ? s.tabActive : {}) }}
@@ -107,6 +118,13 @@ export default function BookingRequests() {
                     </button>
                   </div>
                 )}
+                {(b.status === 'CANCELLED' || b.status === 'REJECTED') && (
+                  <div style={s.actions}>
+                    <button style={s.deleteBtn} onClick={() => handleDelete(b.id)}>
+                      🗑 Delete
+                    </button>
+                  </div>
+                )}
               </div>
             )
           })}
@@ -142,7 +160,7 @@ const s = {
   sub:          { color: '#64748b', fontSize: 14 },
   tabs:         { display: 'flex', gap: 6, flexWrap: 'wrap' },
   tab:          { background: '#1e293b', border: '1px solid #334155', color: '#64748b', borderRadius: 8, padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' },
-  tabActive:    { background: 'rgba(99,102,241,0.2)', borderColor: '#6366f1', color: '#818cf8' },
+  tabActive:    { background: 'rgba(99,102,241,0.2)', border: '1px solid #6366f1', color: '#818cf8' },
   center:       { display: 'flex', justifyContent: 'center', padding: 60 },
   spinner:      { width: 40, height: 40, borderRadius: '50%', border: '3px solid #334155', borderTop: '3px solid #6366f1', animation: 'spin .8s linear infinite' },
   empty:        { textAlign: 'center', padding: '60px 20px' },
@@ -162,4 +180,5 @@ const s = {
   textarea:     { background: '#0f172a', border: '1px solid #334155', borderRadius: 10, padding: '10px 14px', color: '#f1f5f9', fontSize: 14, width: '100%', resize: 'vertical', fontFamily: 'inherit', marginBottom: 16 },
   modalActions: { display: 'flex', gap: 10, justifyContent: 'flex-end' },
   cancelBtn:    { background: '#273549', border: '1px solid #334155', color: '#94a3b8', borderRadius: 8, padding: '8px 18px', fontSize: 13, cursor: 'pointer' },
+  deleteBtn:    { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#ef4444', borderRadius: 8, padding: '7px 18px', fontSize: 13, fontWeight: 600, cursor: 'pointer' },
 }

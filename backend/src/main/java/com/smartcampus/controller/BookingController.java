@@ -123,6 +123,20 @@ public class BookingController {
         }
     }
 
+    // ── ADMIN: Delete a booking ───────────────────────────────────────────────
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
+        try {
+            bookingService.deleteBooking(id);
+            return ResponseEntity.ok(Map.of("message", "Booking deleted successfully"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+        }
+    }
+
     // ── USER/ADMIN: Cancel a booking ──────────────────────────────────────────
 
     @PatchMapping("/{id}/cancel")

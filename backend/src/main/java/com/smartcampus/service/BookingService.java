@@ -136,6 +136,15 @@ public class BookingService {
         return toDTO(bookingRepository.save(booking));
     }
 
+    // ── Delete (Admin) ────────────────────────────────────────────────────────
+
+    @Transactional
+    public void deleteBooking(Long id) {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + id));
+        bookingRepository.delete(booking);
+    }
+
     // ── Conflict check ────────────────────────────────────────────────────────
 
     private boolean hasConflict(Long resourceId, BookingDTO dto) {

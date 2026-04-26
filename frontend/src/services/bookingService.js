@@ -20,6 +20,9 @@ const bookingService = {
   updateStatus: (id, status, reason = null) =>
     api.patch(`/bookings/${id}/status`, { status, reason }).then(r => r.data),
 
+  // DELETE /api/bookings/{id}
+  deleteBooking: (id) => api.delete(`/bookings/${id}`).then(r => r.data),
+
   // PATCH /api/bookings/{id}/cancel
   cancelBooking: (id) => api.patch(`/bookings/${id}/cancel`).then(r => r.data),
 }

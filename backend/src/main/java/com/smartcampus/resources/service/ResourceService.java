@@ -1,6 +1,8 @@
 package com.smartcampus.resources.service;
 
+import com.smartcampus.model.Booking;
 import com.smartcampus.model.User;
+import com.smartcampus.repository.BookingRepository;
 import com.smartcampus.repository.UserRepository;
 import com.smartcampus.resources.dto.CreateResourceRequest;
 import com.smartcampus.resources.dto.ResourceDTO;
@@ -12,6 +14,7 @@ import com.smartcampus.service.NotificationService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,13 +24,16 @@ public class ResourceService {
     private final ResourceRepository  resourceRepository;
     private final NotificationService notificationService;
     private final UserRepository      userRepository;
+    private final BookingRepository   bookingRepository;
 
     public ResourceService(ResourceRepository resourceRepository,
                            NotificationService notificationService,
-                           UserRepository userRepository) {
+                           UserRepository userRepository,
+                           BookingRepository bookingRepository) {
         this.resourceRepository  = resourceRepository;
         this.notificationService = notificationService;
         this.userRepository      = userRepository;
+        this.bookingRepository   = bookingRepository;
     }
 
     // ── Read operations ──────────────────────────────────────────────────────
@@ -120,12 +126,23 @@ public class ResourceService {
 
     /**
      * Delete a resource.
+     * Nullifies the resource FK on any linked bookings first to avoid FK constraint errors.
      */
+    @Transactional
     public void deleteResource(Long id) {
-        if (!resourceRepository.existsById(id)) {
-            throw new RuntimeException("Resource not found with ID: " + id);
+        Resource resource = resourceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + id));
+
+        // Null out resource FK on linked bookings so FK constraint doesn't block delete
+        List<Booking> linkedBookings = bookingRepository.findAll().stream()
+                .filter(b -> b.getResource() != null && b.getResource().getId().equals(id))
+                .toList();
+        for (Booking b : linkedBookings) {
+            b.setResource(null);
+            bookingRepository.save(b);
         }
-        resourceRepository.deleteById(id);
+
+        resourceRepository.delete(resource);
     }
 
     /**
